@@ -10,33 +10,18 @@ app.use(express.static('public'));
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'randomSecretfortest123'; 
 const csrf = require('csurf');
-
-// This is an extra layer of security to prevent CSRF attacks,
-// const csrfProtection = csrf({ cookie: true });
-// app.use(csrfProtection);
-
-
-
+const csrfProtection = csrf({ cookie: true });
 app.use(cors({
   origin: 'http://localhost:3000',  // your frontend origin
   credentials: true
 }));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// This is an extra layer of security to prevent CSRF attacks,
 app.use(cookieParser());
 
-// Simple in-memory sessions (for demo only)
-const sessions = {};
+app.use(bodyParser.urlencoded({ extended: false }));
 
-// Middleware to get user from cookie
-app.use(async (req, res, next) => {
-  const sessionId = req.cookies.sessionId;
-  if (sessionId && sessions[sessionId]) {
-    req.userId = sessions[sessionId];
-    req.user = await prisma.user.findUnique({ where: { id: req.userId } });
-  }
-  next();
-});
+
 
 // Serve signup page
 app.get('/', (req, res) => {
@@ -46,6 +31,7 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
+//csrfProtection
 app.get('/api/dashboard', authenticateJWT, async (req, res) => {
   try {
    
@@ -64,6 +50,7 @@ app.get('/api/dashboard', authenticateJWT, async (req, res) => {
       current: currentUser.username,
       balance: currentUser.balance,
       users,
+      csrfToken: req.csrfToken(),
     });
   } catch (err) {
     console.error(err);

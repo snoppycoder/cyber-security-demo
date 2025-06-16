@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <title>CSRF Playground</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -133,6 +133,14 @@
           <p>Hello, <strong>${data.current}</strong> 👋</p>
           <p>Your balance: <strong>${data.balance.toFixed(2)} Birr</strong></p>
         `;
+        const form = document.querySelector('form[action="/transfer"]');
+    if (form) {
+      let csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = '_csrf';       // This is the expected field name for csurf
+      csrfInput.value = data.csrfToken;
+      form.appendChild(csrfInput);
+  }
       });
   </script>
 
