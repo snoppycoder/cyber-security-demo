@@ -31,8 +31,8 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
-//csrfProtection
-app.get('/api/dashboard', authenticateJWT, async (req, res) => {
+
+app.get('/api/dashboard', csrfProtection, authenticateJWT, async (req, res) => {
   try {
    
     const currentUser = await prisma.user.findUnique({
@@ -60,7 +60,7 @@ app.get('/api/dashboard', authenticateJWT, async (req, res) => {
 
 
 // Handle signup
-app.post('/signup', async (req, res) => {
+app.post('/signup',  async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await prisma.user.create({
@@ -73,7 +73,7 @@ app.post('/signup', async (req, res) => {
 });
 
 
-app.post('/login', async (req, res) => {
+app.post('/login',  async (req, res) => {
   const { username, password } = req.body;
   const user = await prisma.user.findUnique({ where: { username } });
 
@@ -146,7 +146,7 @@ app.get('/account', authenticateJWT, async (req, res) => {
   if (!req.user) return res.redirect('/login');
   res.sendFile(__dirname + '/public/dashboard.html');
 });
-app.post('/transfer', authenticateJWT, async (req, res) => {
+app.post('/transfer', , authenticateJWT, async (req, res) => {
   const { to, amount } = req.body;
   const transferAmount = parseFloat(amount);
 

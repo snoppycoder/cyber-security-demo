@@ -108,6 +108,7 @@
   <div id="info">Loading...</div>
 
   <form action="/transfer" method="POST">
+    <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
     <input type="text" name="to" placeholder="Recipient Username" required>
     <input type="number" name="amount" placeholder="Amount" required step="0.01">
     <button type="submit">💸 Transfer</button>
