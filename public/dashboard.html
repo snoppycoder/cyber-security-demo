@@ -3,59 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f8;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 40px;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #f8fbff, #e0f1ff);
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
     }
 
     h2 {
       color: #2c3e50;
+      font-size: 28px;
+      margin-bottom: 30px;
     }
 
     #info {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
+      max-width: 420px;
+      margin-bottom: 24px;
+      font-size: 17px;
       text-align: center;
-      font-size: 16px;
+      color: #333;
     }
 
     form {
       background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 420px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      max-width: 400px;
+      gap: 16px;
     }
 
     input {
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 15px;
+      padding: 14px;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #007bff;
     }
 
     button {
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
+      padding: 14px;
+      background: #007bff;
+      color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       transition: background 0.3s ease;
     }
@@ -64,29 +82,41 @@
       background-color: #0056b3;
     }
 
-    a {
-      margin-top: 20px;
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
+    .links {
+      margin-top: 24px;
+      display: flex;
+      gap: 20px;
     }
 
-    a:hover {
+    .links a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .links a:hover {
+      color: #0056b3;
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h2>Dashboard</h2>
+
+  <!-- <h2>🌟 Welcome to Your Dashboard</h2> -->
+
   <div id="info">Loading...</div>
 
   <form action="/transfer" method="POST">
     <input type="text" name="to" placeholder="Recipient Username" required>
     <input type="number" name="amount" placeholder="Amount" required step="0.01">
-    <button type="submit">Transfer</button>
+    <button type="submit">💸 Transfer</button>
   </form>
 
-  <a href="/logout">Logout</a>
+  <div class="links">
+    <a href="/profile-update">🧑‍💼 Profile Update</a>
+    <a href="/logout">🚪 Logout</a>
+  </div>
 
   <script>
     fetch('/api/dashboard', { credentials: 'include' })
@@ -100,9 +130,11 @@
       .then(data => {
         if (!data) return;
         document.getElementById('info').innerHTML = `
-          <p>Hello <strong>${data.current}</strong>, balance: <strong>$${data.balance}</strong></p>
+          <p>Hello, <strong>${data.current}</strong> 👋</p>
+          <p>Your balance: <strong>${data.balance.toFixed(2)} Birr</strong></p>
         `;
       });
   </script>
+
 </body>
 </html>

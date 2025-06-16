@@ -33,7 +33,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve signup page
-app.get('/signup', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/signup.html');
 });
 
@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
    
     res.cookie('token', token, {
     httpOnly: true,
-    sameSite: 'Strict' 
+    // sameSite: 'Strict' 
     // this is a mitigation against CSRF attacks since it prevents the cookie from being sent in cross-site requests 
         });
 
@@ -115,6 +115,37 @@ function authenticateJWT(req, res, next) {
     next();
   });
 }
+app.get('/profile-update', authenticateJWT, async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.userId },
+    select: { username:true },
+  });
+
+   res.sendFile(__dirname + '/public/profileUpdate.html');
+});
+app.post('/profile-update', authenticateJWT, async (req, res) => {
+  const {username} = req.body;
+  try {
+    await prisma.user.update({
+      where: { id: req.user.userId },
+      data: { username},
+    });
+    res.redirect(`/account`);
+  } catch (e) {
+    res.send('Update failed: ' + e.message);
+  }
+});
+
+app.get('/transactions', authenticateJWT, (req, res) => {
+  let html = '<h2>Transaction History</h2><ul>';
+  (global.transactions || []).forEach(tx => {
+    // **Danger:** injecting user memo directly into HTML with no escaping
+    html += `<li>From: ${tx.from}, To: ${tx.to}, Amount: ${tx.amount}, Memo: ${tx.memo}</li>`;
+  });
+  html += '</ul>';
+  res.send(html);
+});
+
 
 
 
