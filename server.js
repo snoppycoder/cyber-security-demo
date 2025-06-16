@@ -10,6 +10,7 @@ app.use(express.static('public'));
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'randomSecretfortest123'; 
 
+
 app.use(cors({
   origin: 'http://localhost:3000',  // your frontend origin
   credentials: true
@@ -41,13 +42,12 @@ app.get('/login', (req, res) => {
 });
 app.get('/api/dashboard', authenticateJWT, async (req, res) => {
   try {
-    // Find current user info
+   
     const currentUser = await prisma.user.findUnique({
       where: { id: req.user.userId },
       select: { username: true, balance: true },
     });
 
-    // Find all other users to populate dropdown
     const users = await prisma.user.findMany({
       where: { id: { not: req.user.userId } },
       select: { username: true },
@@ -92,7 +92,12 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
     
    
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token, {
+    httpOnly: true,
+    sameSite: 'Strict' 
+    // this is a mitigation against CSRF attacks since it prevents the cookie from being sent in cross-site requests 
+        });
+
     
     
     res.redirect('/account');
