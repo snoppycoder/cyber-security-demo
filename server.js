@@ -9,6 +9,12 @@ const prisma = new PrismaClient();
 app.use(express.static('public'));
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'randomSecretfortest123'; 
+const csrf = require('csurf');
+
+// This is an extra layer of security to prevent CSRF attacks,
+// const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection);
+
 
 
 app.use(cors({
